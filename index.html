@@ -9,65 +9,6 @@
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.4.0/dist/aframe-extras.min.js"></script>
 
-  <script>
-    // ▼▼▼ 馬を生成するシステム ▼▼▼
-    AFRAME.registerComponent('horse-spawner', {
-      init: function() {
-        // 0.8秒ごとに馬を生成
-        this.timer = setInterval(() => {
-          this.spawnHorse();
-        }, 800); 
-      },
-      spawnHorse: function() {
-        // 1. 【親箱】方角を決める（Z軸＝青い棒 を中心に回す）
-        const wrapper = document.createElement('a-entity');
-        const angle = Math.random() * 360; 
-        wrapper.setAttribute('rotation', `0 0 ${angle}`); // 図の「青い棒」周りの回転
-        wrapper.setAttribute('position', '0 0 0'); // 中心からスタート
-
-        // 2. 【中身】馬のモデル
-        const horse = document.createElement('a-entity');
-        horse.setAttribute('gltf-model', '#horseModel');
-        horse.setAttribute('scale', '0.03 0.03 0.03'); 
-        horse.setAttribute('animation-mixer', ''); // アニメーション再生
-        
-        // ★重要：馬を「机の上に立たせる」ための角度補正
-        // これがないと馬が横倒しになります
-        horse.setAttribute('rotation', '90 0 0'); 
-
-        // 親子合体
-        wrapper.appendChild(horse);
-        
-        // 「向いている方向へ進め」という命令を【親箱】につける
-        wrapper.setAttribute('move-radially', '');
-        
-        this.el.appendChild(wrapper);
-      }
-    });
-
-    // ▼▼▼ 進む動作（アセットが勝手に進むならここは補助的役割） ▼▼▼
-    AFRAME.registerComponent('move-radially', {
-      init: function() {
-        // スピード（ランダム）
-        this.speed = 0.01 + Math.random() * 0.01;
-      },
-      tick: function() {
-        // Y軸方向へ動かす
-        // （Z軸回転させた後のローカル座標のY軸＝机の上の放射方向になります）
-        this.el.object3D.translateY(this.speed);
-
-        // 掃除（中心からある程度離れたら消す）
-        // ※アセット自体が動いて座標が変わるタイプでも、親箱を動かしていれば問題なし
-        const pos = this.el.object3D.position;
-        const distance = Math.sqrt(pos.x * pos.x + pos.y * pos.y);
-        
-        if (distance > 1.5) {
-          this.el.parentNode.removeChild(this.el);
-        }
-      }
-    });
-  </script>
-
   <style>
     body { margin: 0; overflow: hidden; }
   </style>
@@ -90,22 +31,61 @@
 
     <a-entity mindar-image-target="targetIndex: 0">
       
-      <a-entity horse-spawner></a-entity>
-
       <a-entity 
         position="0 0 0" 
-        animation="property: rotation; to: 0 0 360; loop: true; dur: 10000; easing: linear">
+        animation="property: rotation; to: 0 360 0; loop: true; dur: 10000; easing: linear">
         
         <a-image
           src="#textImage"
-          position="0 0 0.5" 
+          position="0 0 0.1"
           scale="2 2 2"
-          rotation="90 0 0" 
+          rotation="0 0 0"
           alpha-test="0.5">
         </a-image>
 
       </a-entity>
-      
+
+
+      <a-entity rotation="0 0 0">
+        <a-entity 
+          gltf-model="#horseModel" 
+          rotation="90 0 0" 
+          position="0 0.4 0" 
+          scale="0.03 0.03 0.03" 
+          animation-mixer="timeScale: 1.0">
+        </a-entity>
+      </a-entity>
+
+      <a-entity rotation="0 0 90">
+        <a-entity 
+          gltf-model="#horseModel" 
+          rotation="90 0 0" 
+          position="0 0.4 0" 
+          scale="0.03 0.03 0.03" 
+          animation-mixer="timeScale: 1.5">
+        </a-entity>
+      </a-entity>
+
+      <a-entity rotation="0 0 180">
+        <a-entity 
+          gltf-model="#horseModel" 
+          rotation="90 0 0" 
+          position="0 0.4 0" 
+          scale="0.03 0.03 0.03" 
+          animation-mixer="timeScale: 0.7">
+        </a-entity>
+      </a-entity>
+
+      <a-entity rotation="0 0 270">
+        <a-entity 
+          gltf-model="#horseModel" 
+          rotation="90 0 0" 
+          position="0 0.4 0" 
+          scale="0.03 0.03 0.03" 
+          animation-mixer="timeScale: 2.5">
+        </a-entity>
+      </a-entity>
+
     </a-entity>
     
   </a-scene>
