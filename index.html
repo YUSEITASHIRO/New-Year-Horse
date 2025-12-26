@@ -10,40 +10,58 @@
   <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.4.0/dist/aframe-extras.min.js"></script>
 
   <script>
-    // ▼▼▼ 馬のシステム（軽量化版のまま変更なし） ▼▼▼
+    // ▼▼▼ 馬を生成するシステム ▼▼▼
     AFRAME.registerComponent('horse-spawner', {
       init: function() {
-        setInterval(() => {
+        // 0.8秒ごとに馬を生成
+        this.timer = setInterval(() => {
           this.spawnHorse();
-        }, 2500); // 2.5秒間隔
+        }, 800); 
       },
-
       spawnHorse: function() {
+        // 1. 【親箱】方角を決める（Z軸＝青い棒 を中心に回す）
         const wrapper = document.createElement('a-entity');
         const angle = Math.random() * 360; 
-        wrapper.setAttribute('rotation', `0 0 ${angle}`); 
-        wrapper.setAttribute('position', '0 0 0');
+        wrapper.setAttribute('rotation', `0 0 ${angle}`); // 図の「青い棒」周りの回転
+        wrapper.setAttribute('position', '0 0 0'); // 中心からスタート
 
+        // 2. 【中身】馬のモデル
         const horse = document.createElement('a-entity');
         horse.setAttribute('gltf-model', '#horseModel');
-        horse.setAttribute('rotation', '90 0 0'); 
         horse.setAttribute('scale', '0.03 0.03 0.03'); 
+        horse.setAttribute('animation-mixer', ''); // アニメーション再生
+        
+        // ★重要：馬を「机の上に立たせる」ための角度補正
+        // これがないと馬が横倒しになります
+        horse.setAttribute('rotation', '90 0 0'); 
 
-        const speed = 0.005 + Math.random() * 0.01;
-        const timeScale = 0.5 + (speed * 100); 
-        horse.setAttribute('animation-mixer', `timeScale: ${timeScale}`);
-
+        // 親子合体
         wrapper.appendChild(horse);
-        wrapper.setAttribute('mover', `speed: ${speed}`);
+        
+        // 「向いている方向へ進め」という命令を【親箱】につける
+        wrapper.setAttribute('move-radially', '');
+        
         this.el.appendChild(wrapper);
       }
     });
 
-    AFRAME.registerComponent('mover', {
-      schema: { speed: {type: 'number', default: 0.01} },
+    // ▼▼▼ 進む動作（アセットが勝手に進むならここは補助的役割） ▼▼▼
+    AFRAME.registerComponent('move-radially', {
+      init: function() {
+        // スピード（ランダム）
+        this.speed = 0.01 + Math.random() * 0.01;
+      },
       tick: function() {
-        this.el.object3D.translateY(this.data.speed);
-        if (this.el.object3D.position.y > 1.5) {
+        // Y軸方向へ動かす
+        // （Z軸回転させた後のローカル座標のY軸＝机の上の放射方向になります）
+        this.el.object3D.translateY(this.speed);
+
+        // 掃除（中心からある程度離れたら消す）
+        // ※アセット自体が動いて座標が変わるタイプでも、親箱を動かしていれば問題なし
+        const pos = this.el.object3D.position;
+        const distance = Math.sqrt(pos.x * pos.x + pos.y * pos.y);
+        
+        if (distance > 1.5) {
           this.el.parentNode.removeChild(this.el);
         }
       }
@@ -72,19 +90,22 @@
 
     <a-entity mindar-image-target="targetIndex: 0">
       
-      <a-entity position="0 0 0.5" rotation="90 0 0">
+      <a-entity horse-spawner></a-entity>
+
+      <a-entity 
+        position="0 0 0" 
+        animation="property: rotation; to: 0 0 360; loop: true; dur: 10000; easing: linear">
         
         <a-image
           src="#textImage"
+          position="0 0 0.5" 
           scale="2 2 2"
-          alpha-test="0.5"
-          animation="property: rotation; to: 0 360 0; loop: true; dur: 5000; easing: linear">
+          rotation="90 0 0" 
+          alpha-test="0.5">
         </a-image>
 
       </a-entity>
-
-      <a-entity horse-spawner></a-entity>
-
+      
     </a-entity>
     
   </a-scene>
