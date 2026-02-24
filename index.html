@@ -1,93 +1,11 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>AR New Year Card 2026</title>
-  
-  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.4.0/dist/aframe-extras.min.js"></script>
+<script>
+    function getRandomRotation() {
+        return Math.floor(Math.random() * 360);
+    }
 
-  <style>
-    body { margin: 0; overflow: hidden; }
-  </style>
-</head>
-<body>
-  
-  <a-scene 
-    mindar-image="imageTargetSrc: ./targets.mind; uiScanning: no;" 
-    color-space="sRGB" 
-    renderer="colorManagement: true, physicallyCorrectLights" 
-    vr-mode-ui="enabled: false" 
-    device-orientation-permission-ui="enabled: false">
-
-    <a-assets>
-      <a-asset-item id="horseModel" src="./horse.glb"></a-asset-item>
-      <img id="textImage" src="./text.png">
-    </a-assets>
-
-    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
-
-    <a-entity mindar-image-target="targetIndex: 0">
-      
-      <a-entity 
-        position="0 0 0" 
-        animation="property: rotation; to: 0 0 360; loop: true; dur: 10000; easing: linear">
-        
-        <a-image
-          src="#textImage"
-          position="0 0 0.1"
-          scale="2 2 2"
-          rotation="90 90 90"
-          alpha-test="0.5">
-        </a-image>
-
-      </a-entity>
-
-
-      <a-entity rotation="0 0 0">
-        <a-entity 
-          gltf-model="#horseModel" 
-          rotation="90 0 0" 
-          position="0 0.4 0" 
-          scale="0.03 0.03 0.03" 
-          animation-mixer="timeScale: 1.0">
-        </a-entity>
-      </a-entity>
-
-      <a-entity rotation="0 0 90">
-        <a-entity 
-          gltf-model="#horseModel" 
-          rotation="90 0 0" 
-          position="0 0.4 0" 
-          scale="0.03 0.03 0.03" 
-          animation-mixer="timeScale: 1.5">
-        </a-entity>
-      </a-entity>
-
-      <a-entity rotation="0 0 180">
-        <a-entity 
-          gltf-model="#horseModel" 
-          rotation="90 0 0" 
-          position="0 0.4 0" 
-          scale="0.03 0.03 0.03" 
-          animation-mixer="timeScale: 0.7">
-        </a-entity>
-      </a-entity>
-
-      <a-entity rotation="0 0 270">
-        <a-entity 
-          gltf-model="#horseModel" 
-          rotation="90 0 0" 
-          position="0 0.4 0" 
-          scale="0.03 0.03 0.03" 
-          animation-mixer="timeScale: 2.5">
-        </a-entity>
-      </a-entity>
-
-    </a-entity>
-    
-  </a-scene>
-</body>
-</html>
+    const horses = document.querySelectorAll('.horse');
+    horses.forEach(horse => {
+        const randomAngle = getRandomRotation();
+        horse.style.transform = `rotate(${randomAngle}deg)`;
+    });
+</script>
