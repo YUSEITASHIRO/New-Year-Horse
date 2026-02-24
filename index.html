@@ -1,11 +1,31 @@
-<script>
-    function getRandomRotation() {
-        return Math.floor(Math.random() * 360);
-    }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Horse Rotation</title>
+    <style>
+        .horse {
+            width: 100px;
+            height: 100px;
+            background-color: gold;
+            margin: 5px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="horse" id="horse1"></div>
+    <div class="horse" id="horse2"></div>
+    <div class="horse" id="horse3"></div>
+    <script>
+        function getRandomRotation() {
+            return Math.floor(Math.random() * 360);
+        }
 
-    const horses = document.querySelectorAll('.horse');
-    horses.forEach(horse => {
-        const randomAngle = getRandomRotation();
-        horse.style.transform = `rotate(${randomAngle}deg)`;
-    });
-</script>
+        document.querySelectorAll('.horse').forEach(function(horse) {
+            horse.style.transform = 'rotate(' + getRandomRotation() + 'deg)';
+        });
+    </script>
+</body>
+</html>
