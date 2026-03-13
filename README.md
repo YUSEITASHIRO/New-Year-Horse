@@ -65,17 +65,18 @@ New-Year-Horse/
 ├── index.html       # ARシーン本体（A-Frame + MindAR）
 ├── horse.glb        # 3D馬モデル（GLBフォーマット）
 ├── targets.mind     # MindAR用トラッキングデータ（年賀状の写真をコンパイルして生成）
-└── text.png         # AR空間で回転表示される「2026」の文字グラフィック
+├── text.png         # AR空間で回転表示される「2026」の文字グラフィック
+└── 年賀状2026.pdf    # 友人に送った年賀状本体
 ```
 
-> ※ 年賀状のイラスト画像そのものはリポジトリには含まれていません。`targets.mind` はその年賀状をMindAR Image Target Compilerで処理したデータです。
+> ※ 年賀状のイラスト画像そのものは`年賀状2026.pdf`です。`targets.mind` はその年賀状をMindAR Image Target Compilerで処理したデータです。
 
 ---
 
 ## 🔧 工夫した点 (Implementation Notes)
 
 ### マーカー登録フロー
-自作の年賀状をMindAR の Image Target Compiler に通すことで `targets.mind` を生成しています。このファイルを読み込むことで、カメラが年賀状を認識した瞬間に3Dオブジェクトが起動します。なお年賀状のイラスト画像自体はリポジトリには含まれていません。
+自作の年賀状をMindAR の Image Target Compiler に通すことで `targets.mind` を生成しています。このファイルを読み込むことで、カメラが年賀状を認識した瞬間に3Dオブジェクトが起動します。
 
 ### 馬の姿勢・接地調整
 配布元の GLB モデルはデフォルト状態では横倒しになるため、`rotation="90 0 0"` で起こしています。また、馬の足が年賀状の紙面にめり込んだり浮いたりしないよう、`position="0 0.4 0"` の Y 値を繰り返し微調整して自然な接地感を出しています。
